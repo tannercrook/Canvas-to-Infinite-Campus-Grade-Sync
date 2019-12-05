@@ -8,6 +8,9 @@ Tanner Crook @tannercrook
 
 
 *Originally created by the owners at their positions at LCSD#2 in Afton, WY, USA. Permissions was given to open-source.*
+Mentions:
+Jesse Cole for being a wizard.
+Kyle Weber for being a great boss.
 
 
 *Use and your own risk!*
