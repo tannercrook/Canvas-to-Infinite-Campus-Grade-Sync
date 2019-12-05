@@ -1,3 +1,14 @@
+# ===============================================================================
+# processToIC.ps1
+# -------------------------------------------------------------------------------
+# Author: Tanner Crook (@tannercrook)
+# Database: MS SQL Server
+# This script will import and process all of the data from the Canvas csv files
+# into Infinite Campus. *Please note that you will need to set variables!*
+# ===============================================================================
+
+
+
 Start-Transcript -Path "logs/latest.txt" # This can be adjusted for your log files
 
 # Connection Variables
