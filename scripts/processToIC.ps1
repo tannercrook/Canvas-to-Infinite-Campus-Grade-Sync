@@ -570,6 +570,7 @@ try {
         ,   xca.dueDate = xia.dueDate
         ,   xca.pointsPossible = xia.pointsPossible
         ,   xca.seq = xia.seq
+        ,   xca.canvasCategoryID = xia.canvasCategoryID
     WHEN NOT MATCHED BY SOURCE THEN 
     DELETE
     WHEN NOT MATCHED BY TARGET THEN
