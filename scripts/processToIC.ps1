@@ -489,6 +489,7 @@ try {
     , lpg.seq = cc.seq
     , lpg.weight = cc.weight
     , lpg.termID = cc.termID
+    , lpg.taskID = cc.taskID
     WHEN NOT MATCHED THEN
     INSERT
     ( sectionID
