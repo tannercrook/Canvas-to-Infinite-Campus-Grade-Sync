@@ -1,6 +1,7 @@
 import server as s
 import functions as f
 import accounts as a
+import terms as t
 import os
 import json
 
@@ -38,10 +39,11 @@ def mainMenu():
         setAccessToken()
     elif userInput == '4':
         os.system('cls' if os.name == 'nt' else 'clear')
-        setAccountsToSync()
+        a.setAccountsToSync()
+        mainMenu()
     elif userInput == '5':
         os.system('cls' if os.name == 'nt' else 'clear')
-        print('Do Something')
+        t.setTermsToSync()
     elif userInput == '6':
         os.system('cls' if os.name == 'nt' else 'clear')
         print('Do Something')
@@ -64,14 +66,6 @@ def mainMenu():
         mainMenu()
 
 
-def writeJSON(variables):
-    """
-    Writes the variables.json file.
-    """
-    with open('variables.json', 'w') as jsonFile:
-        json.dump(variables, jsonFile, indent=4)
-
-
 def setURL():
     """
     Sets the Canvas URL variable.
@@ -87,7 +81,7 @@ def setURL():
     userInput = userInput.replace("'", '')
     variables = f.getVariables()
     variables['canvasURL'] = userInput
-    writeJSON(variables)
+    f.writeJSON(variables)
     print(f'URL set to {userInput}')
     mainMenu()
 
@@ -107,7 +101,7 @@ def setDistrictID():
     userInput = userInput.replace("'", '')
     variables = f.getVariables()
     variables['districtAccountID'] = userInput
-    writeJSON(variables)
+    f.writeJSON(variables)
     print(f'District account iID set to {userInput}')
     mainMenu()
 
@@ -126,114 +120,9 @@ def setAccessToken():
     userInput = userInput.replace("'", '')
     variables = f.getVariables()
     variables['accessToken'] = userInput
-    writeJSON(variables)
+    f.writeJSON(variables)
     print(f'Canvas access token set to {userInput}')
     mainMenu()
-
-
-def setAccountsToSync():
-    """
-    Sets the Canvas sub accounts from which you want to sync grades.
-    """
-
-
-    variables = f.getVariables()
-    accounts = a.getAccounts()
-
-    if 'accounts' in variables:
-        sAccounts = variables['accounts']
-    else:
-        sAccounts = []
-    sAccountIDs = []
-    for account in sAccounts:
-        sAccountIDs.append(account['id'])
-
-    print('Accounts Menu')
-    print('1 - See Currently Syncing Accounts')
-    print('2 - Add Account')
-    print('3 - Remove Account')
-    print('4 - Main Menu')
-    userInput = input("Option: ")
-    userInput = userInput.strip()
-    userInput = userInput.replace('"', "")
-    userInput = userInput.replace("'", '')
-
-    if userInput == '1':
-        print('')
-        print('Currently Syncing Accounts')
-        if len(sAccounts) > 0:
-            for account in sAccounts:
-                print('Account ID - Account Name')
-                print(f'{account["id"]} - {account["name"]}')
-        else:
-            print('There are not any accounts set up to sync.')
-        print('')
-        setAccountsToSync()
-    elif userInput == '2':
-        accountIDs = []
-        print('')
-        print('Account ID - Account Name')
-        for account in accounts:
-            if account['id'] in sAccountIDs:
-                continue
-            print(f'{account["id"]} - {account["name"]}')
-            accountIDs.append(account['id'])
-        userInput = input("Account to add: ")
-        userInput = userInput.strip()
-        userInput = userInput.replace('"', "")
-        userInput = userInput.replace("'", '')
-        if not userInput.isdigit():
-            print('Invalid choice. Please input a valid choice.')
-            setAccountsToSync()
-        if int(userInput) not in accountIDs:
-            print('Invalid choice. Please input a valid choice.')
-            setAccountsToSync()
-        for account in accounts:
-            if account['id'] == int(userInput):
-                sAccounts.append(account)
-        print('')
-    elif userInput == '3':
-        print('')
-        print('Account ID - Account Name')
-        for account in sAccounts:
-            print(f'{account["id"]} - {account["name"]}')
-        userInput = input("Account to remove: ")
-        userInput = userInput.strip()
-        userInput = userInput.replace('"', "")
-        userInput = userInput.replace("'", '')
-        if not userInput.isdigit():
-            print('Invalid choice. Please input a valid choice.')
-            setAccountsToSync()
-        if int(userInput) not in sAccountIDs:
-            print('Invalid choice. Please input a valid choice.')
-            setAccountsToSync()
-        for account in sAccounts:
-            if account['id'] == int(userInput):
-                sAccounts.remove(account)
-        print('')
-
-    elif userInput =='4':
-        mainMenu()
-    else:
-        os.system('cls' if os.name == 'nt' else 'clear')
-        print('Invalid choice. Please input a valid choice.')
-        setAccountsToSync()
-    variables['accounts'] = sAccounts
-
-    # print('Please enter the district account id for the base account '
-    #       'of your Canvas instance. It should be a number.'
-    #      )
-    # userInput = input("District Account ID: ")
-    # userInput = userInput.strip()
-    # userInput = userInput.replace('"', "")
-    # userInput = userInput.replace("'", '')
-    # variables = f.getVariables()
-    # variables['districtAccountID'] = userInput
-    writeJSON(variables)
-    setAccountsToSync()
-    # print(f'District account iID set to {userInput}')
-    # mainMenu()
-
 
 def setPath():
     """
@@ -250,7 +139,7 @@ def setPath():
     userInput = userInput.replace("'", '')
     variables = f.getVariables()
     variables['path'] = userInput
-    writeJSON(variables)
+    f.writeJSON(variables)
     print(f'Path set to {userInput}')
     mainMenu()
 

@@ -14,3 +14,10 @@ def getVariables():
         variables = {}
         variables['path'] = ''
         return variables
+
+def writeJSON(variables):
+    """
+    Writes the variables.json file.
+    """
+    with open('variables.json', 'w') as jsonFile:
+        json.dump(variables, jsonFile, indent=4)
