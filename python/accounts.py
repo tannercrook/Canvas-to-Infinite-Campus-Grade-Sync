@@ -10,8 +10,8 @@ def getAccounts():
     instance.
     """
     variables = f.getVariables()
-    districtID = variables['districtAccountID']
-    urlTail = f'/api/v1/accounts/{districtID}/sub_accounts'
+    rootID = variables['rootAccountID']
+    urlTail = f'/api/v1/accounts/{rootID}/sub_accounts'
     response = s.serverCall(urlTail, 'GET')
     accounts = json.loads(response.read())
     accountList = []
@@ -28,13 +28,14 @@ def setAccountsToSync():
     Sets the Canvas sub accounts from which you want to sync grades.
     """
 
-    variables = f.getVariables()
+    if f.checkVariables():
+        variables = f.getVariables()
+    else:
+        return
+
     accounts = getAccounts()
 
-    if 'accounts' in variables:
-        sAccounts = variables['accounts']
-    else:
-        sAccounts = []
+    sAccounts = variables['accounts']
     sAccountIDs = []
     for account in sAccounts:
         sAccountIDs.append(account['id'])
@@ -45,9 +46,7 @@ def setAccountsToSync():
     print('3 - Remove Account')
     print('4 - Main Menu')
     userInput = input("Option: ")
-    userInput = userInput.strip()
-    userInput = userInput.replace('"', "")
-    userInput = userInput.replace("'", '')
+    userInput = f.stripUserInput(userInput)
 
     if userInput == '1':
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -70,9 +69,7 @@ def setAccountsToSync():
             print(f'{account["id"]} - {account["name"]}')
             accountIDs.append(account['id'])
         userInput = input("Account to add: ")
-        userInput = userInput.strip()
-        userInput = userInput.replace('"', "")
-        userInput = userInput.replace("'", '')
+        userInput = f.stripUserInput(userInput)
         if not userInput.isdigit():
             print('Invalid choice. Please input a valid choice.')
             setAccountsToSync()
@@ -93,9 +90,7 @@ def setAccountsToSync():
         for account in sAccounts:
             print(f'{account["id"]} - {account["name"]}')
         userInput = input("Account to remove: ")
-        userInput = userInput.strip()
-        userInput = userInput.replace('"', "")
-        userInput = userInput.replace("'", '')
+        userInput = f.stripUserInput(userInput)
         if not userInput.isdigit():
             print('Invalid choice. Please input a valid choice.')
             setAccountsToSync()

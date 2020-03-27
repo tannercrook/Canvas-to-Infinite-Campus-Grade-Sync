@@ -3,13 +3,13 @@ import functions as f
 import json
 import os
 
-def getTermTerms():
+def getTerms():
     """
     Retrieves all terms for a given account.
     """
     variables = f.getVariables()
-    districtID = variables['districtAccountID']
-    urlTail = f'/api/v1/accounts/{districtID}/terms?per_page=100'
+    rootID = variables['rootAccountID']
+    urlTail = f'/api/v1/accounts/{rootID}/terms?per_page=100'
     response = s.serverCall(urlTail, 'GET')
     terms = json.loads(response.read())
     termList = []
@@ -26,14 +26,20 @@ def setTermsToSync():
     Sets the Canvas terms from which you want to sync grades.
     """
 
-    variables = f.getVariables()
-    terms = getTermTerms()
-
-    if 'terms' in variables:
-        sTerms = variables['terms']
+    if f.checkVariables():
+        variables = f.getVariables()
+        if len(variables['accounts']) == 0:
+            print('You need to select accounts to sync first.')
+            print('')
+            return
     else:
-        sTerms = []
+        return
+
+    terms = getTerms()
+
+    sTerms = variables['terms']
     sTermIDs = []
+    
     for term in sTerms:
         sTermIDs.append(term['id'])
 
@@ -43,9 +49,7 @@ def setTermsToSync():
     print('3 - Remove Term')
     print('4 - Main Menu')
     userInput = input("Option: ")
-    userInput = userInput.strip()
-    userInput = userInput.replace('"', "")
-    userInput = userInput.replace("'", '')
+    userInput = f.stripUserInput(userInput)
 
     if userInput == '1':
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -68,9 +72,7 @@ def setTermsToSync():
             print(f'{term["id"]} - {term["name"]}')
             termIDs.append(term['id'])
         userInput = input("Term to add: ")
-        userInput = userInput.strip()
-        userInput = userInput.replace('"', "")
-        userInput = userInput.replace("'", '')
+        userInput = f.stripUserInput(userInput)
         if not userInput.isdigit():
             print('Invalid choice. Please input a valid choice.')
             setTermsToSync()
@@ -91,9 +93,7 @@ def setTermsToSync():
         for term in sTerms:
             print(f'{term["id"]} - {term["name"]}')
         userInput = input("Term to remove: ")
-        userInput = userInput.strip()
-        userInput = userInput.replace('"', "")
-        userInput = userInput.replace("'", '')
+        userInput = f.stripUserInput(userInput)
         if not userInput.isdigit():
             print('Invalid choice. Please input a valid choice.')
             setTermsToSync()

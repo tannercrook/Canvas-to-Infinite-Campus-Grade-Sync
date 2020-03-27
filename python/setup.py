@@ -2,6 +2,7 @@ import server as s
 import functions as f
 import accounts as a
 import terms as t
+import courses as c
 import os
 import json
 
@@ -11,10 +12,9 @@ def mainMenu():
     Displays the main menu of the setup script.
     """
 
-    os.system('cls' if os.name == 'nt' else 'clear')
     print('Main Menu')
     print('1 - Set Canvas Instance URL')
-    print('2 - Set District Account ID')
+    print('2 - Set Root Account ID')
     print('3 - Set Canvas Access Token')
     print('4 - Select Accounts to Sync')
     print('5 - Select Terms to Sync')
@@ -24,16 +24,14 @@ def mainMenu():
     print('9 - Help')
     print('10 - Exit')
     userInput = input('Select an option: ')
-    userInput = userInput.strip() # Removes the trailing space from the path.
-    userInput = userInput.replace('"', "")
-    userInput = userInput.replace("'", '')
+    userInput = f.stripUserInput(userInput)
 
     if userInput == '1':
         os.system('cls' if os.name == 'nt' else 'clear')
         setURL()
     elif userInput == '2':
         os.system('cls' if os.name == 'nt' else 'clear')
-        setDistrictID()
+        setRootID()
     elif userInput == '3':
         os.system('cls' if os.name == 'nt' else 'clear')
         setAccessToken()
@@ -44,9 +42,11 @@ def mainMenu():
     elif userInput == '5':
         os.system('cls' if os.name == 'nt' else 'clear')
         t.setTermsToSync()
+        mainMenu()
     elif userInput == '6':
         os.system('cls' if os.name == 'nt' else 'clear')
-        print('Do Something')
+        c.setupIgnoredCourses()
+        mainMenu()
     elif userInput == '7':
         os.system('cls' if os.name == 'nt' else 'clear')
         print('Do Something')
@@ -76,9 +76,7 @@ def setURL():
           'i.e https://yourschool.instructure.com'
          )
     userInput = input("Your url: ")
-    userInput = userInput.strip()
-    userInput = userInput.replace('"', "")
-    userInput = userInput.replace("'", '')
+    userInput = f.stripUserInput(userInput)
     variables = f.getVariables()
     variables['canvasURL'] = userInput
     f.writeJSON(variables)
@@ -86,23 +84,21 @@ def setURL():
     mainMenu()
 
 
-def setDistrictID():
+def setRootID():
     """
-    Sets the Canvas district account id variable. This is the base
+    Sets the Canvas root account id variable. This is the base
     account id for your Canvas instance.
     """
 
-    print('Please enter the district account id for the base account '
+    print('Please enter the root account id for the base account '
           'of your Canvas instance. It should be a number.'
          )
-    userInput = input("District Account ID: ")
-    userInput = userInput.strip()
-    userInput = userInput.replace('"', "")
-    userInput = userInput.replace("'", '')
+    userInput = input("Root Account ID: ")
+    userInput = f.stripUserInput(userInput)
     variables = f.getVariables()
-    variables['districtAccountID'] = userInput
+    variables['rootAccountID'] = userInput
     f.writeJSON(variables)
-    print(f'District account iID set to {userInput}')
+    print(f'Root account ID set to {userInput}')
     mainMenu()
 
 
@@ -115,9 +111,7 @@ def setAccessToken():
           'for an admin account.'
          )
     userInput = input("District Account ID: ")
-    userInput = userInput.strip()
-    userInput = userInput.replace('"', "")
-    userInput = userInput.replace("'", '')
+    userInput = f.stripUserInput(userInput)
     variables = f.getVariables()
     variables['accessToken'] = userInput
     f.writeJSON(variables)
@@ -134,9 +128,7 @@ def setPath():
           '/home/sync/Canvas-to-Infinite-Campus-Grade-Sync/python/'
          )
     userInput = input("Path: ")
-    userInput = userInput.strip()
-    userInput = userInput.replace('"', "")
-    userInput = userInput.replace("'", '')
+    userInput = f.stripUserInput(userInput)
     variables = f.getVariables()
     variables['path'] = userInput
     f.writeJSON(variables)
